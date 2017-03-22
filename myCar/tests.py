@@ -32,6 +32,13 @@ class CarTests(APITestCase):
         res = response.json()
         self.assertEqual(res['color'], 213)
 
+    def test_user_has_to_be_loged_in_to_create_car(self):
+        data = {'color': 213, 'brand': 'seadTest'}
+        response = self.client.post('/cars/', data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+
+
 class UserTests(APITestCase):
     def test_create_user(self):
         """
