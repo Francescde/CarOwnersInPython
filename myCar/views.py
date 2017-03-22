@@ -5,8 +5,8 @@ from myCar.models import Car
 from myCar.serializers import CarSerializer, UserSerializer
 from rest_framework import mixins
 from rest_framework.views import APIView
-from rest_framework.response import Response
 from rest_framework import generics
+from rest_framework.response import Response
 from django.contrib.auth.models import User
 from rest_framework import permissions
 from myCar.permissions import IsOwnerOrReadOnly
@@ -62,7 +62,7 @@ class CarList(mixins.ListModelMixin,
         return self.create(request, *args, **kwargs)
 
 class OwnCars(APIView):
-    def get(self, request, format=None):
+    def get(request):
 
         cars = Car.objects.all().filter(owner=request.user)
         serializer = CarSerializer(cars, many=True)

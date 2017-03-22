@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'myCar',
     'rest_framework',
+    'rest_framework_swagger',
     'django.conf.urls',
 ]
 
