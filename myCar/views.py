@@ -1,6 +1,3 @@
-from django.template.context_processors import request
-from rest_framework.decorators import api_view
-
 from myCar.models import Car
 from myCar.serializers import CarSerializer, UserSerializer
 from rest_framework import mixins
@@ -10,6 +7,23 @@ from rest_framework.response import Response
 from django.contrib.auth.models import User
 from rest_framework import permissions
 from myCar.permissions import IsOwnerOrReadOnly
+from rest_framework_swagger import renderers
+from rest_framework.schemas import SchemaGenerator
+from rest_framework.permissions import AllowAny
+
+
+class SwaggerSchemaView(APIView):
+    permission_classes = [AllowAny]
+    renderer_classes = [
+        renderers.OpenAPIRenderer,
+        renderers.SwaggerUIRenderer
+    ]
+
+    def get(self, request):
+        generator = SchemaGenerator()
+        schema = generator.get_schema(request=request)
+
+        return Response(schema)
 
 
 class UserList(mixins.ListModelMixin,
@@ -62,7 +76,7 @@ class CarList(mixins.ListModelMixin,
         return self.create(request, *args, **kwargs)
 
 class OwnCars(APIView):
-    def get(request):
+    def get(self, request):
 
         cars = Car.objects.all().filter(owner=request.user)
         serializer = CarSerializer(cars, many=True)
