@@ -26,11 +26,25 @@ class CarTests(APITestCase):
         user.save()
         snippet = Car(color=213,brand="SeatTest", owner=user)
         snippet.save()
-        # TODO: preguntar per que aixo funciona
         response = self.client.get('/cars/' + str(snippet.id) + '.json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         res = response.json()
         self.assertEqual(res['color'], 213)
+
+    def test_delate_car(self):
+        """
+        Ensure you candelete a car.
+        """
+        user = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
+        user.save()
+        self.client.login(username='john', password='johnpassword')
+        snippet = Car(color=213, brand="SeatTest", owner=user)
+        snippet.save()
+        count_car = Car.objects.count()
+        self.assertEqual(User.objects.count(), 1)
+        response = self.client.delete('/cars/' + str(snippet.id) + '.json')
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(Car.objects.count(), count_car-1)
 
     def test_user_has_to_be_loged_in_to_create_car(self):
         data = {'color': 213, 'brand': 'seadTest'}
